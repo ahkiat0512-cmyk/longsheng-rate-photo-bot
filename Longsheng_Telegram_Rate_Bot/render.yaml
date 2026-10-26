@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: longsheng-rate-photo-bot
+    runtime: docker
+    healthCheckPath: /health
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: ALLOWED_CHAT_ID
+        sync: false
+      - key: TELEGRAM_WEBHOOK_SECRET
+        generateValue: true
