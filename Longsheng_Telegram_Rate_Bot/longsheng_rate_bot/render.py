@@ -42,19 +42,20 @@ def _rate(
     y: int,
     value: str,
     *,
-    x: int = 80,
-    width: int = 166,
+    text_x: int = 80,
+    cover_x: int = 65,
+    cover_width: int = 200,
     texture_x: int = 242,
 ) -> None:
     """Replace only a number field; all approved surrounding artwork remains."""
     # Reuse a clean sliver of the original panel texture rather than painting a
     # flat box over it. This preserves the black/gold artwork around the rate.
     texture = image.crop((texture_x, y, texture_x + 4, y + 58)).resize(
-        (width, 58), Image.Resampling.BILINEAR
+        (cover_width, 58), Image.Resampling.BILINEAR
     )
-    image.paste(texture, (x, y))
+    image.paste(texture, (cover_x, y))
     draw.text(
-        (x + 8, y - 2),
+        (text_x, y - 2),
         value,
         font=_font(48),
         fill="#ffe374",
@@ -83,8 +84,12 @@ def render_poster(sheet: RateSheet, output_path: Path) -> Path:
     _rate(image, draw, 1086, sheet.cash_rates[2], texture_x=240)
 
     # Red panel: USDT → RMB.
-    _rate(image, draw, 1252, sheet.rmb_rates[0], x=96, width=150, texture_x=244)
-    _rate(image, draw, 1314, sheet.rmb_rates[1], x=96, width=150, texture_x=244)
+    _rate(
+        image, draw, 1252, sheet.rmb_rates[0], text_x=96, cover_x=80, cover_width=170, texture_x=244
+    )
+    _rate(
+        image, draw, 1314, sheet.rmb_rates[1], text_x=96, cover_x=80, cover_width=170, texture_x=244
+    )
 
     image.save(output_path, format="PNG", optimize=True)
     return output_path
