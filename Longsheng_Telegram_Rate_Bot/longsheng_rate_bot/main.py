@@ -40,7 +40,13 @@ class TelegramWebhookHandler(BaseHTTPRequestHandler):
             return
         chat_id, text = extracted
         settings = Settings.from_environment()
-        result = process_message(chat_id, text, settings, OUTPUT_DIR)
+        result = process_message(
+            chat_id,
+            text,
+            settings,
+            OUTPUT_DIR,
+            on_processing=lambda: send_text(settings.bot_token, chat_id, "制作中，请稍候…"),
+        )
         if result.kind == "poster" and result.image_path:
             try:
                 send_photo(settings.bot_token, chat_id, result.image_path)
